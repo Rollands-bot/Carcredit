@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarCredit - Finance Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            font-size: 1.5rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .page-subtitle {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-header {
+            margin-bottom: 1.25rem;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 0.375rem;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 0.625rem 0.75rem;
+            font-size: 0.875rem;
+            font-family: inherit;
+            color: var(--text);
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            font-family: inherit;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: var(--card-bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg);
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .result-box {
+            background: var(--bg);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            font-size: 0.875rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--primary);
+            padding-top: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        .result-label {
+            color: var(--text-muted);
+        }
+
+        .result-value {
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        .table th {
+            background: var(--bg);
+            font-weight: 600;
+            color: var(--text);
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table tr:hover {
+            background: var(--bg);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.625rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .badge-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-paid {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-overdue {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            gap: 0.75rem;
+        }
+
+        .spinner {
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-muted {
+            color: var(--text-muted);
+        }
+
+        .font-semibold {
+            font-weight: 600;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 1.25rem 0;
+        }
+
+        .inline-form {
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .inline-form .form-group {
+            flex: 1;
+            min-width: 150px;
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="#" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>CarCredit</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="container">
+        <h1 class="page-title">Finance Calculator</h1>
+        <p class="page-subtitle">Create contracts and manage installment plans</p>
+
+        <div class="grid">
+            <!-- Create Contract -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">New Contract</h2>
+                </div>
+                <div id="contractAlert"></div>
+                <form id="contractForm">
+                    <div class="form-group">
+                        <label class="form-label" for="contract_no">Contract Number</label>
+                        <input type="text" class="form-input" id="contract_no" name="contract_no" required placeholder="e.g., SUGUS-001">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="client_name">Client Name</label>
+                        <input type="text" class="form-input" id="client_name" name="client_name" required placeholder="e.g., SUGUS">
+                    </div>
+                    <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+                        <div class="form-group">
+                            <label class="form-label" for="otr">OTR Price</label>
+                            <input type="number" class="form-input" id="otr" name="otr" required placeholder="240000000">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="dp_percent">DP (%)</label>
+                            <input type="number" class="form-input" id="dp_percent" name="dp_percent" required placeholder="20" step="0.1">
+                        </div>
+                    </div>
+                    <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+                        <div class="form-group">
+                            <label class="form-label" for="period">Period</label>
+                            <select class="form-select" id="period" name="period" required>
+                                <option value="12">12 months (12%)</option>
+                                <option value="18">18 months (14%)</option>
+                                <option value="24">24 months (14%)</option>
+                                <option value="36">36 months (16.5%)</option>
+                                <option value="48">48 months (16.5%)</option>
+                                <option value="60">60 months (16.5%)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="start_date">Start Date</label>
+                            <input type="date" class="form-input" id="start_date" name="start_date" value="2024-01-25">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block" id="submitBtn">
+                        Generate Contract
+                    </button>
+                </form>
+
+                <div id="contractResult" class="result-box hidden"></div>
+            </div>
+
+            <!-- Reports -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Reports</h2>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Query Type</label>
+                    <div class="inline-form">
+                        <select class="form-select" id="queryType" style="flex: 1;">
+                            <option value="A">Total Installments Due</option>
+                            <option value="B">Penalty Calculation</option>
+                        </select>
+                        <button onclick="runReport()" class="btn btn-primary">Run</button>
+                    </div>
+                </div>
+
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                    <div class="form-group">
+                        <label class="form-label" for="reportClient">Client</label>
+                        <input type="text" class="form-input" id="reportClient" value="SUGUS">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="asOfDate">As Of Date</label>
+                        <input type="date" class="form-input" id="asOfDate" value="2024-08-14">
+                    </div>
+                </div>
+
+                <div id="reportResult" class="result-box hidden"></div>
+            </div>
+        </div>
+
+        <!-- Installment Schedule -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Installment Schedule</h2>
+            </div>
+            <div id="scheduleResult">
+                <p class="text-muted" style="text-align: center; padding: 2rem;">No schedule generated yet</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const API_BASE = '';
+
+        function formatCurrency(amount) {
+            return 'Rp ' + parseFloat(amount).toLocaleString('id-ID');
+        }
+
+        function showAlert(elementId, message, type) {
+            const el = document.getElementById(elementId);
+            el.innerHTML = `<div class="alert alert-${type}">${type === 'success' ? '✓' : '✗'} ${message}</div>`;
+            setTimeout(() => el.innerHTML = '', 5000);
+        }
+
+        document.getElementById('contractForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.textContent = 'Processing...';
+
+            const data = {
+                contract_no: document.getElementById('contract_no').value,
+                client_name: document.getElementById('client_name').value,
+                otr: parseFloat(document.getElementById('otr').value),
+                dp_percent: parseFloat(document.getElementById('dp_percent').value),
+                period: parseInt(document.getElementById('period').value),
+                start_date: document.getElementById('start_date').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/api/generate-contract`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.status === 201) {
+                    showAlert('contractAlert', 'Contract created successfully!', 'success');
+                    displayContractResult(result);
+                    displaySchedule(result.installments);
+                } else if (response.status === 409) {
+                    showAlert('contractAlert', 'Contract number already exists', 'error');
+                } else {
+                    showAlert('contractAlert', result.error || 'Failed to create contract', 'error');
+                }
+            } catch (error) {
+                showAlert('contractAlert', 'Connection error: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Generate Contract';
+            }
+        });
+
+        function displayContractResult(result) {
+            const el = document.getElementById('contractResult');
+            const c = result.contract;
+            const calc = result.calculation;
+
+            el.innerHTML = `
+                <div class="result-row">
+                    <span class="result-label">OTR Price</span>
+                    <span class="result-value">${formatCurrency(c.otr)}</span>
+                </div>
+                <div class="result-row">
+                    <span class="result-label">Down Payment</span>
+                    <span class="result-value">${formatCurrency(c.dp_amount)}</span>
+                </div>
+                <div class="result-row">
+                    <span class="result-label">Principal</span>
+                    <span class="result-value">${formatCurrency(c.principal)}</span>
+                </div>
+                <div class="result-row">
+                    <span class="result-label">Interest Rate</span>
+                    <span class="result-value">${c.interest_rate}%</span>
+                </div>
+                <div class="result-row">
+                    <span class="result-label">Total Interest</span>
+                    <span class="result-value">${formatCurrency(calc.total_interest)}</span>
+                </div>
+                <div class="result-row">
+                    <span class="result-label">Monthly Installment</span>
+                    <span class="result-value">${formatCurrency(calc.monthly_installment)}</span>
+                </div>
+            `;
+            el.classList.remove('hidden');
+        }
+
+        function displaySchedule(installments) {
+            const el = document.getElementById('scheduleResult');
+            
+            if (!installments || installments.length === 0) {
+                el.innerHTML = '<p class="text-muted" style="text-align: center; padding: 2rem;">No installments</p>';
+                return;
+            }
+
+            let html = `
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Due Date</th>
+                                <th class="text-right">Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            installments.forEach(inst => {
+                const statusClass = inst.status === 'pending' ? 'pending' : inst.status;
+                html += `
+                    <tr>
+                        <td>${inst.installment_no}</td>
+                        <td>${inst.due_date}</td>
+                        <td class="text-right font-semibold">${formatCurrency(inst.amount)}</td>
+                        <td><span class="badge badge-${statusClass}">${inst.status}</span></td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table></div>';
+            el.innerHTML = html;
+        }
+
+        async function runReport() {
+            const queryType = document.getElementById('queryType').value;
+            const clientName = document.getElementById('reportClient').value;
+            const asOfDate = document.getElementById('asOfDate').value;
+
+            const el = document.getElementById('reportResult');
+            el.classList.remove('hidden');
+            el.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+
+            let url = `${API_BASE}/api/report?query=${queryType}&as_of_date=${asOfDate}`;
+            if (queryType === 'A') {
+                url += `&client_name=${clientName}`;
+            }
+
+            try {
+                const response = await fetch(url);
+                const result = await response.json();
+
+                if (response.ok) {
+                    displayReportResult(result, queryType);
+                } else {
+                    el.innerHTML = `<div class="alert alert-error">✗ ${result.error || 'Failed to run report'}</div>`;
+                }
+            } catch (error) {
+                el.innerHTML = `<div class="alert alert-error">✗ Connection error: ${error.message}</div>`;
+            }
+        }
+
+        function displayReportResult(result, queryType) {
+            const el = document.getElementById('reportResult');
+
+            if (queryType === 'A') {
+                el.innerHTML = `
+                    <div class="result-row">
+                        <span class="result-label">Client</span>
+                        <span class="result-value">${result.client_name}</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">As Of Date</span>
+                        <span class="result-value">${result.as_of_date}</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Outstanding</span>
+                        <span class="result-value">${formatCurrency(result.total_due)}</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Overdue Installments</span>
+                        <span class="result-value">${result.installments_count}</span>
+                    </div>
+                `;
+            } else {
+                let html = `
+                    <div class="result-row">
+                        <span class="result-label">Period</span>
+                        <span class="result-value">${result.period.from} — ${result.as_of_date}</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Total Penalty</span>
+                        <span class="result-value">${formatCurrency(result.total_penalties)}</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Affected Installments</span>
+                        <span class="result-value">${result.penalties_count}</span>
+                    </div>
+                `;
+
+                if (result.penalties && result.penalties.length > 0) {
+                    html += `
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Contract</th>
+                                        <th>Month</th>
+                                        <th class="text-right">Days Late</th>
+                                        <th class="text-right">Penalty</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                    `;
+
+                    result.penalties.forEach(pen => {
+                        html += `
+                            <tr>
+                                <td>
+                                    <div class="font-semibold">${pen.contract_no}</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">${pen.client_name}</div>
+                                </td>
+                                <td>${pen.installment_no}</td>
+                                <td class="text-right">${pen.days_late}</td>
+                                <td class="text-right font-semibold">${formatCurrency(pen.total_penalty)}</td>
+                            </tr>
+                        `;
+                    });
+
+                    html += '</tbody></table></div>';
+                }
+
+                el.innerHTML = html;
+            }
+        }
+    </script>
+</body>
+</html>
